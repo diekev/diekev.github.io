@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Blender Wishes - diekev</title>
+</head>
+
+<body>
+    <h1>Blender Wishes</h1>
+    <p>This non-exhaustive table lists features that I wish Blender had, and may develop myself at some point. Some of
+        them are already in the
+        works.
+    </p>
+
+    <table border="1">
+        <tbody>
+            <tr>
+                <th>Category</td>
+                <th>Feature</td>
+                <th>Status</th>
+                <th>Description</td>
+            </tr>
+            <tr>
+                <td rowspan="4">API</td>
+                <td>Custom Editors</td>
+                <td>In development</td>
+                <td>Ability for add-on developers to create their own editors.</td>
+            </tr>
+            <tr>
+                <!--<td rowspan="4">API</td>-->
+                <td>Custom Modifiers</td>
+                <td>In development</td>
+                <td>Ability for add-on developers to create their own modifiers.</td>
+            </tr>
+            <tr>
+                <!--<td rowspan="4">API</td>-->
+                <td>C++ Add-ons</td>
+                <td>In development</td>
+                <td>Add a C++ API to Blender, next to the Python one. This is done by making public the API used by
+                    Cycles.</td>
+            </tr>
+            <tr>
+                <!--<td rowspan="4">API</td>-->
+                <td>Rust Add-ons</td>
+                <td>Unstarted</td>
+                <td>Add a Rust API to Blender. This is based on work for the C++ API</td>
+            </tr>
+            <tr>
+                <td rowspan="7">Editor</td>
+                <td>Blueprint/Floorplan Editor</td>
+                <td>Unstarted</td>
+                <td>A view to create floorplans for houses, with automatic creation of the geometry in the 3D view,
+                    perhaps via a custom modifier.</td>
+            </tr>
+            <tr>
+                <!--<td>Editor</td>-->
+                <td>Materials DataBase Manager</td>
+                <td>Unstarted</td>
+                <td>A view to see all materials in the .blend file with ability to add or remove or merge together some
+                    materials. Currently, those actions have to be done manually by guessing which objects have
+                    materials to remove/merge.</td>
+            </tr>
+            <tr>
+                <!--<td>Editor</td>-->
+                <td>Progress Viewer</td>
+                <td>Unstarted</td>
+                <td>A view to see all that is currently being computed during depsgraph evaluation, with the ability to
+                    cancel anything. So a view for all progress bars.</td>
+            </tr>
+            <tr>
+                <!--<td>Editor</td>-->
+                <td>Properties Spreasheet</td>
+                <td>Unstarted</td>
+                <td>A view to see & edit all properties of a set of data-blocs (all objects, all materials, etc.).</td>
+            </tr>
+            <tr>
+                <!--<td>Editor</td>-->
+                <td>Rig UI Editor</td>
+                <td>In development</td>
+                <td>An editor to create a 2d view of a rig for easier manipulation.</td>
+            </tr>
+            <tr>
+                <!--<td>Editor</td>-->
+                <td>Scene Reconstruction</td>
+                <td>Unstarted</td>
+                <td>Port <a href="https://fspy.io/">fSpy</a> to a custom editor in Blender, with ability to create and
+                    manage multiple cameras.</td>
+            </tr>
+            <tr>
+                <!--<td>Editor</td>-->
+                <td>Schematic View</td>
+                <td>Unstarted</td>
+                <td>A graph view of all the relations between data-blocks in the scene. In the past Blender had this
+                    under the name "OOPS".</td>
+            </tr>
+            <tr>
+                <td rowspan="3">Modelling</td>
+                <td>Edit poly modifier</td>
+                <td>Unstarted</td>
+                <td>A modifier which caches its input geometry so it can be further hand modified in edit mode.</td>
+            </tr>
+            <tr>
+                <!--<td>Modelling</td>-->
+                <td>Point Cloud for Dynamic Paint</td>
+                <td>Unstarted</td>
+                <td>Allow using point cloud objects in dynamic paint, to replace the particle system.</td>
+            </tr>
+            <tr>
+                <!--<td>Modelling</td>-->
+                <td>UVs from Object Mode</td>
+                <td>Unstarted</td>
+                <td>Allow viewing and editing to some extent the UVs even when an object in is "Object Mode"</td>
+            </tr>
+            <tr>
+                <td rowspan="4">Other</td>
+                <td>Deep Compositing</td>
+                <td>In development</td>
+                <td>Add support for deep images in the compositor, with geometry nodes to help rebuild the scene in the
+                    3D view.</td>
+            </tr>
+            <tr>
+                <!--<td>Other</td>-->
+                <td>Deep Rendering</td>
+                <td>Unstarted</td>
+                <td>Render deep images from Cycles.</td>
+            </tr>
+            <tr>
+                <!--<td>Other</td>-->
+                <td>Modifier Infos</td>
+                <td>Unstarted</td>
+                <td>Better information and error reports from modifiers.</td>
+            </tr>
+            <tr>
+                <!--<td>Other</td>-->
+                <td>Object Proxies</td>
+                <td>Unstarted</td>
+                <td>Add Level of Detail (LoD) support for objects.</td>
+            </tr>
+            <tr>
+                <td rowspan="1">Texturing</td>
+                <td>Image Layers</td>
+                <td>Unstarted</td>
+                <td>Add layers to images for non-destructive painting workflows. Layers can be paint layers or
+                    procedural layers, or even folders, etc.</td>
+            </tr>
+            <tr>
+                <td rowspan="2">Subdivision</td>
+                <td>Face Holes</td>
+                <td>In development</td>
+                <td>Face holes are faces that are removed from the end result of the subdivision process.</td>
+            </tr>
+            <tr>
+                <!--<td>Other</td>-->
+                <td>Mesh Parameters</td>
+                <td>In development</td>
+                <td>Add subdivision parameters to the Mesh data-block to simplify detection of subdivision meshes for
+                    rendering and Alembic/USD exports.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

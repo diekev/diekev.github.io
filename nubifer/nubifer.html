@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+
+<head>
+    <title>Nubifer - diekev</title>
+</head>
+
+<body>
+    <h1>Nubifer</h1>
+
+    <h2>Présentation</h2>
+
+    <p>Nubifer (<a href="https://fr.wiktionary.org/wiki/nubifer">« qui apporte des nuages »</a>) est un projet de
+        navigateur web entièrement écrit dans mon langage de programmation Kuri.</p>
+    <p>Aucun cadre existant n'est utilisé : les moteurs HTML, JavaScript, et CSS sont fait maison.</p>
+
+    <p>Le navigateur n'est que dans son enfance (le développement ayant commencé en juillet 2024), et dès lors non
+        utilisable. Mais nous pouvons déjà naviguer et afficher certaines pages. Il n'y a pas de support pour
+        l'ouverture de plusieurs pages ou onglets, de marque-pages, etc.
+        Le plus important pour le moment est d'afficher et d'interragir avec les pages correctement.</p>
+
+    <h3>Code source</h3>
+    <p>Le code source n'est pas encore disponible, car il dépend du langage de programmation qui ne l'est pas non plus.
+    </p>
+
+    <h2>État</h2>
+
+    <p>Que ce soit pour HTML, CSS, et JavaScript, bon nombre de spécifications restent à implémenter.</p>
+
+    <h3>HTML</h3>
+
+    <p>Le parseur est toujours incomplet, mais basé sur HTML5.</p>
+
+    <p>Nous ne gérons que les requêtes "GET", bien qu'il soit possible d'entrer des informations dans des formulaire, on
+        ne peut pas encore les poster.</p>
+
+    <p>Une attention particulière aux vecteurs de traçage (fingerprinting, etc.) devra être portée. Pour l'instant je
+        n'ai pas fait un bon travail pour noter où ces choses peuvent survenir afin de les prévenir.</p>
+
+    <h4>WebSocket</h4>
+    <p>Les WebSocket sont déjà supportées, moyennant quelques bugs.</p>
+
+    <h3>CSS</h3>
+
+    <p>Le moteur est environ à la version CSS 2.1 avec un support plus ou moins partiel pour des nouvelles
+        fonctionalités (telles que calc(), display flex)</p>
+
+    <h3>JavaScript</h3>
+
+    <p>Pour l'instant, l'exécution du code JavaScript se fait en traversant l'arbre syntaxique, ce qui est largement
+        inefficient.</p>
+
+    <p>Un interpréteur utilisant du code binaire est également en développement, ce qui devrait drastiquement réduire
+        les
+        temps d'exécution, et est une étape vers une compilation à la volée vers des instructions natives, pour être
+        directement exécuté par le processeur.</p>
+
+    <p>Le ramasse-miette est également inefficient car il utilise le système d'introspection du langage : les objets
+        sont traversées grâce aux informations des types fournies par le compilateur. Dans le future, des fonctions
+        dédiées pour chaque type seront générées lors de la compilation pour accélérer l'ébouage.</p>
+
+    <h3>Exemples</h3>
+
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <p>acid1</p>
+                </td>
+                <td><a href="../images/acid1.png"><img src="../images/acid1.png" width="200"></a></td>
+                <td>
+                    <p>Mon navigateur est plus ou moins au même niveau que ceux de 1997.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>acid2</p>
+                </td>
+                <td><a href="../images/acid2.png"><img src="../images/acid2.png" width="200"></a></td>
+                <td>
+                    <p>Il reste 2 problèmes à régler avant de passer à l'an 2005.</p>
+                    <ol>
+                        <li>le rectangle rouge en bas à gauche qui devrait être plus bas et invisible car 'overflow:
+                            hidden'</li>
+                        <li>les rectangles noir et rouge sur les yeux : ceci est dû à l'ordre de dessin qui n'est pas
+                            implémenté selon la
+                            spécification</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Google (ancienne version)</p>
+                </td>
+                <td><a href="../images/google.png"><img src="../images/google.png" width="200"></a></td>
+                <td>
+                    <p>Vu le faible support pour JavaScript, je dois me contenter du vieux google (je ne sais pas si
+                        d'autres moteurs ont des pages simples).</p>
+                    <p>L'ordre de dessin fait que les liens en haut à gauche ne sont pas cliquable. Et aucune recherche
+                        ne peut être faite car les requêtes POST ne sont pas gérées.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Reddit (ancienne version)</p>
+                </td>
+                <td><a href="../images/reddit.png"><img src="../images/reddit.png" width="200"></a></td>
+                <td>Il y a plein de choses à faire.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Météo France</p>
+                </td>
+                <td><a href="../images/meteofrance.png"><img src="../images/meteofrance.png" width="200"></a></td>
+                <td>
+                    <p>meteofrance fait grand usage de display: flex, et fut essentiel dans l'implémentation de cette
+                        propriété. 'display: grid' est également utilisé pour les menu, ce sera la cible de
+                        développements prochains.</p>
+                    <p>Les glyphes manquant (visibles via les paires de carreaux vides) sont en fait des émojis qui ne
+                        sont pas supportés pour le moment.</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
