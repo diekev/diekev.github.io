@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Documentation Kuri</title>
+<style>
+pre { background-color: rgb(24,24,24); color: rgba(233, 233, 233, 1); padding: 1em; }.commentaire { color: rgba(45, 168, 45, 1); }.mot-cle { color: rgba(199, 139, 255, 1); }.chaine { color: rgba(221, 141, 67, 1); }.nombre { color: rgba(131, 221, 136, 1); }ol.sections { list-style-type: lower-alpha; }</style>
+</head>
+<body>
+<a href="../index.html">Accueil</a>
+<hr>
+<p>ATTENTION : cette documentation est loin d'être exhaustive</p><h2>Table des matières</h2><ol><li><div><p><a href='#ch1'> Kuri</a></p><ol class='sections'><li><a href='#ch1-sec1'> Motivation</a></li><li><a href='#ch1-sec2'> Français</a></li><li><a href='#ch1-sec3'> Le français dans Kuri</a></li></ol></div></li><li><div><p><a href='#ch2'> Principale</a></p><ol class='sections'><li><a href='#ch2-sec1'> principale</a></li><li><a href='#ch2-sec2'> Compilation</a></li><li><a href='#ch2-sec4'> Modules</a></li></ol></div></li><li><div><p><a href='#ch3'> Types numériques</a></p><ol class='sections'><li><a href='#ch3-sec1'> Types fondamentaux.</a></li></ol></div></li><li><div><p><a href='#ch4'> Booléens</a></p><ol class='sections'><li><a href='#ch4-sec1'> Opérations</a></li></ol></div></li><li><div><p><a href='#ch5'> Tableaux</a></p><ol class='sections'><li><a href='#ch5-sec1'> Tableaux fixes</a></li><li><a href='#ch5-sec2'> Tableaux dynamiques</a></li><li><a href='#ch5-sec3'> Tranches</a></li></ol></div></li><li><div><p><a href='#ch6'> Chaines</a></p><ol class='sections'><li><a href='#ch6-sec1'> Expression</a></li></ol></div></li><li><div><p><a href='#ch7'> Impression</a></p><ol class='sections'><li><a href='#ch7-sec1'> imprime</a></li><li><a href='#ch7-sec2'> imprimeln</a></li><li><a href='#ch7-sec3'> fmt_imprime</a></li></ol></div></li><li><div><p><a href='#ch8'> Contrôle de flux</a></p><ol class='sections'><li><a href='#ch8-sec1'> si</a></li><li><a href='#ch8-sec2'> saufsi</a></li><li><a href='#ch8-sec3'> sinon</a></li></ol></div></li><li><div><p><a href='#ch9'> Répétitions</a></p><ol class='sections'><li><a href='#ch9-sec1'> boucle</a></li><li><a href='#ch9-sec2'> tantque</a></li><li><a href='#ch9-sec3'> répète ... tantque</a></li><li><a href='#ch9-sec4'> pour ... dans</a></li><li><a href='#ch9-sec5'> continue, arrête</a></li><li><a href='#ch9-sec6'> reprends</a></li><li><a href='#ch9-sec7'> Contrôle ciblé</a></li><li><a href='#ch9-sec8'> sansarrêt, sinon</a></li></ol></div></li><li><div><p><a href='#ch10'> Exécution lors de la compilation</a></p><ol class='sections'><li><a href='#ch10-sec1'> #exécute</a></li><li><a href='#ch10-sec2'> #corps_texte</a></li><li><a href='#ch10-sec3'> #test</a></li></ol></div></li></ol><hr>
+<div>
+<h3 id='ch1'> Kuri</h3>
+<p></p><p> Kuri est un langage de programmation système en développement depuis 2019. Le langage est impératif avec un système de type statique et nominatif. </p><p> </p>
+<h4 id='ch1-sec1'> Motivation</h4>
+<p></p><p> Kuri est développé dans le but de simplifier le programmation logicielle en se débarrassant du superflux et de la friction au développement hérités des vieux langages tel que C ou C++. </p><p> Ces langages furent développés à une époque où la puissance de calcul était inférieure à la nôtre. Pour pouvoir compiler des grands programmes, ceux-ci sont divisés en « unités de traduction » qui chacune doit produire un objet liable. Tous ces objets sont ensuite liés ensemble afin de produire soit un exécutable, soit une bibliothèque. Dans ces langages, le code source est divisé en deux partie : les fichiers sources et les entêtes. Les entêtes ayant la charge de déclarer les prototypes des fonctions et des types afin que toutes les unités ont la même vision du monde. Les fichiers sources incluent les entêtes qu'ils désirent. </p><p> Ce modèle de compilation est inefficient à la fois en temps et en espace. </p><p> En temps, car la division du programme en unités requiers que la compilation de chacune d'entre elle fasse du travail redondant. Par exemple, les fichiers d'entêtes sont toujours retraités pour chaque unité, il n'y a pas de mise en tampon possible, ni en mémoire, ni sur le disque. Le compilateur de Kuri est pour l'instant écrit en environ 100 000 de code C++. Après inclusion, ces 100 000 lignes de code deviennent environ 6 000 000 de lignes. Près de 60 fois plus. Chromium (navigateur Web) quant à lui passait il y a quelques années de 11 million à 3,6 milliards de lignes (<a href="https://randomascii.wordpress.com/2020/03/30/big-project-build-times-chromium/">source</a>). </p><p> En espace, car chaque unité de traduction génère des données redondantes quant aux autres. La version de débogage du logiciel de création 3D Blender génère environ 16 gigaoctets de fichiers objets (sur mon Linux) quand, une fois liés entre eux, l'exécutable final ne pèse que 2 gigaoctet. </p><p> En temps, de nouveau, car l'écriture sur disque de toutes ces données redondantes n'est pas instantannée. </p><p> En espace, de nouveau, car les grosses entreprises qui en ont les moyens utilisent des fermes de compilation pour accélerer le temps de compilation, certains logiciels prenant plusieurs heures (environ 21 heures pour Chromium, voir lien plus), voir quelques jours, à compiler. </p><p> Bien entendu, ces temps de compilation sont pour une compilation fraîche. Une méthode pour accélerer la compilation est la compilation incrémentielle : on ne recompile que les unités dont le code source fut modifié depuis la dernière compilation. Ceci ne résoud pas tous les problèmes, car la liaison finale doit toujours tout charger depuis le disque (perte de temps et d'espace mémoire) et tout dédupliquer (perte de temps). Un autre problème est qu'il est possible qu'une dépendance ne fut pas recompilée alors qu'elle due l'être, résultant en des bugs étranges lors de l'exécution. Que celui qui n'a jamais recompilé à zéro pour résoudre un bug me jette la première pierre. </p><p> À tout ceci s'ajoute les systèmes de compilation (comme CMake ou Bazel) qui ne furent créés que pour gérer toutes ces unités de traduction, mais au fond ne résoudent aucun problème et ne font qu'ajouter de la complexité. Ce sont eux qui ont la charge de détecter ce qui doit être compilé ou recompilé, et même ceci leur semble dur à faire. </p><p> Pire encore, les langages sont sous-définis. Il n'existe aucune manière dans ceux-ci de définir quelle bibliothèque externe contient du code avec lequel on souhaiterait être lié. Et le modèle de liaison n'aide pas non plus. Un simple oubli, ou une bibliothèque donnée sur la ligne de commande dans le mauvais ordre, et nous nous retrouvons avec des erreurs incompréhensibles. </p><p> Bref. </p><p> Le but de Kuri est une compilation simple. On économise de l'espace sur le disque (pas ou peu d'informations redondantes, pas besoin d'avoir une suite de logiciels pour aider le compilateur, etc.), on ne requiers pas de ferme de compilation, etc. On économise du temps. Les 100 000 lignes de C++ du compilateur compilent en environ 320 secondes (~5 min et quelques), contre 6 secondes pour les 140 000 lignes de Kuri de mon <a href="https://diekev.github.io/nubifer/nubifer.html">navigateur Web</a> (et encore le compilateur a un algorithme accidentellement quadratique en plein milieu). </p><p> </p>
+<h4 id='ch1-sec2'> Français</h4>
+<p></p><p> Il reste beaucoup à dire sur ces sujets. Mais avant de commencer la documentation sommaire du langage, je doit prévenir : il est en français. Les mot-clés sont en français. Bien qu'ayant appris la programmation en anglais, et ayant contribué à des projets open-source en anglais, et reconnaissant qu'au fond la langue anglaise est la lingua franca de la programmation, j'ai décidé de le faire en français. J'ai décidé de me couper, plus ou moins, du monde anglophone pour la programmation, en tout cas pour mes projets personnels. Le code source Kuri du <a href="https://diekev.github.io/nubifer/nubifer.html">navigateur Web</a> est principalement en anglais, même si le langage est français. </p><p> Je me dis que personne de sérieux dans le monde anglophone, en tout cas personne n'en ayant les moyens, n'a envie d'améliorer la situation. Les problèmes posés par les vieux langages et modèles de compilation sont connus depuis longtemps. Plusieurs nouveaux langages ont été créés, mais aucun d'eux, en tout cas ceux qui sont publics, ne fait vraiment des efforts pour changer la donne. Ils sont trop verbeux, ou requiers toujours un système de compilation foireux, ou imposent tel ou tel paradigme qui n'aide pas vraiment au développement de logiciel, ou furent tout simplement créés par de grosses afin de dominer le marché (pour avoir des employés préformés). </p><p> Ce que nous désirons ce sont des langages simples, qui permettent de créer des programmes de manière simple. Ce dernier point est également important. Les logiciels (incluant les sites Web) sont engraissés, lents et défectueux. Ceci vient principalement d'une certaine culture de la médiocrité dont il faudrait se défaire. Trop de développeurs pensent que le status quo est la seule et bonne manière de faire, que la complexité est nécessaire, etc. </p><p> Cette culture de la médiocrité est chronophage et énergivore. On pourrait aisément avoir le même monde (informatique) en utilisant au bas mot un ordre de grandeur moins de ressources. Peut-être deux ordres si on supprime la publicité. </p><p> J'ai peut-être les yeux plus gros que le ventre, mais je veux créer une alternative. Et ce n'est pas en utilisant la même langue, la même culture, qu'on créera une alternative. Et si je suis le seul dans cet aventure, cela me convient aussi. </p>
+<h4 id='ch1-sec3'> Le français dans Kuri</h4>
+<p></p><p> Le code est autant que faire ce peut en français. L'utilisation de l'anglais n'est réservé que pour les interfaces des bibliothèques systèmes, ou encore pour les spécifications Web. </p><p> Parfois, soit par manque d'éducation, soit par absence d'un terme plus spécifique en français, cela m'arrive de confectionner des néologismes. Certains de ces néologismes ne sont en fait que des vieux mots n'étant plus utilisés depuis quelques siècles. Je trouve que parfois le français est inefficient. </p><p> Étant alsacien, parler ou entendre plusieurs langues ne me gène pas (mes feus grands-parents utilisaient le français et l'alsacien). J'emprunte également des mots à l'anglais quand le français fait défaut. Le but n'est pas une pureté de la race, mais l'exercice de création de mots m'est intéressante, et je la préfère aux emprunts. </p><p> Finalement, j'ai une tendance à accorder les choses au féminin. Tout simplement car « structure de données » ou encore « fonction » sont féminins, dont j'accorde leurs noms en genre, sans me soucier de savoir si cela a un sens. Par exemple, dans le code source du compilateur du langage, nous pouvons trouver une « compilatrice », une « typeuse », une « sémanticienne », ou encore une « lexeuse ». Certains de ces mots ne sont pas le dico. </p>
+</div>
+<hr>
+<div>
+<h3 id='ch2'> Principale</h3>
+<p></p><p> </p>
+<h4 id='ch2-sec1'> principale</h4>
+<p>Le point d'entrée d'un programme Kuri est une fonction nommée « principale ». </p><p> Seules les fonctions peuvent contenir du code impératif. </p><p> D'autres fonctions, avec d'autres noms peuvent également être définies. </p>
+<pre>
+principale :: <span class='mot-cle'>fonc</span> ()
+{
+}
+</pre>
+<h4 id='ch2-sec2'> Compilation</h4>
+<p> Pour compiler un programme Kuri, il suffit d'écrire son code dans un fichier dont l'extension est ".kuri" et d'appeler le compilateur, nommé "kuri" avec le fichier en argument. </p>
+<pre>
+kuri mon_fichier.kuri
+</pre>
+<p>Le compilateur se charge du reste. Pas de CMake, pas de cargo, pas de système de compilation autre que le compilateur, et, on l'espère, un langage permettant de bien définir le programme que nous souhaitons compiler et la manière de le faire. </p>
+<h4 id='ch2-sec4'> Modules</h4>
+<p>Les programmes Kuri sont divisés en modules. Nous verrons ce qu'ils sont plus tard. Mais pour comprendre certains exemples, et les rendre légaux, nous ne les mentionnnons que très brièvement. </p>
+<pre>
+<span class='commentaire'>/* Pour utiliser un module, nous devons écrire « importe » suivi du nom du
+ * module.
+ *
+ * Ce module-ci contient plusieurs fonctions de base pour le langage. */</span>
+<span class='mot-cle'>importe</span> Fondation
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch3'> Types numériques</h3>
+<p>Kuri supporte différents types numériques pour représenter des nombres entiers ou réels en point flottant. </p>
+<h4 id='ch3-sec1'> Types fondamentaux.</h4>
+<pre>
+principale :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>// Les types entiers naturels (l'ensemble N en mathématiques).</span>
+    a: <span class='mot-cle'>n8</span>  = <span class='nombre'>123</span> <span class='commentaire'>//  8-bit</span>
+    b: <span class='mot-cle'>n16</span> = <span class='nombre'>456</span> <span class='commentaire'>// 16-bit</span>
+    c: <span class='mot-cle'>n32</span> = <span class='nombre'>789</span> <span class='commentaire'>// 32-bit</span>
+    d: <span class='mot-cle'>n64</span> = <span class='nombre'>101</span> <span class='commentaire'>// 64-bit</span>
+
+    <span class='commentaire'>// Les types entiers relatifs (l'ensemble Z en mathématiques).</span>
+    e: <span class='mot-cle'>z8</span>  = -<span class='nombre'>123</span> <span class='commentaire'>//  8-bit</span>
+    f: <span class='mot-cle'>z16</span> = -<span class='nombre'>456</span> <span class='commentaire'>// 16-bit</span>
+    g: <span class='mot-cle'>z32</span> = -<span class='nombre'>789</span> <span class='commentaire'>// 32-bit</span>
+    h: <span class='mot-cle'>z64</span> = -<span class='nombre'>101</span> <span class='commentaire'>// 64-bit</span>
+
+    <span class='commentaire'>// Les types nombres réels (l'ensemble R en mathématiques, bien</span>
+    <span class='commentaire'>// que les nombres en point-flottant ne peuvent représenter tous</span>
+    <span class='commentaire'>// les nombres réels dans leurs intervalles).</span>
+    i: <span class='mot-cle'>r16</span> = <span class='nombre'>0.5</span> <span class='commentaire'>// 16-bit</span>
+    j: <span class='mot-cle'>r32</span> = <span class='nombre'>1.0</span> <span class='commentaire'>// 32-bit</span>
+    k: <span class='mot-cle'>r64</span> = <span class='nombre'>2.0</span> <span class='commentaire'>// 64-bit</span>
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch4'> Booléens</h3>
+<p>Le type « bool » permet d'encoder des valeurs qui sont soit vraies soit fausses. </p>
+<h4 id='ch4-sec1'> Opérations</h4>
+<pre>
+exemple_opérations_booléennes :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Déclaration de variables booléennes avec typage explicite.
+     * « vrai » et « faux » sont des mots-clés du langage. Ils ont
+     * les valeurs qu'ils annoncent. */</span>
+    a: <span class='mot-cle'>bool</span> = <span class='mot-cle'>vrai</span>
+    b: <span class='mot-cle'>bool</span> = <span class='mot-cle'>faux</span>
+
+    <span class='commentaire'>/* Le type peut être implicite. */</span>
+    c := <span class='mot-cle'>vrai</span>
+    d := <span class='mot-cle'>faux</span>
+
+    <span class='commentaire'>/* Des valeurs booléennes sont retournées par les différents
+     * opérateurs de comparaisons du langage. */</span>
+
+    <span class='commentaire'>/* == est utilisé pour tester l'égalité de deux valeurs. */</span>
+    e := a == c <span class='commentaire'>// sera vrai</span>
+
+    <span class='commentaire'>/* != est utilisé pour tester l'inégalité de deux valeurs. */</span>
+    f := b != d <span class='commentaire'>// sera faux</span>
+
+    <span class='commentaire'>/* Pour les nombres, des opérations de comparaisons ordonnées
+     * sont disponibles. */</span>
+    g := <span class='nombre'>5</span>
+    h := <span class='nombre'>6</span>
+
+    i := g < h  <span class='commentaire'>// strictement inférieur, sera vrai</span>
+    j := g <= h <span class='commentaire'>// inférieur ou égal, sera vrai</span>
+    k := g > h  <span class='commentaire'>// strictement supérieur, sera faux</span>
+    l := g >= h <span class='commentaire'>// supérieur ou égal, sera faux</span>
+
+    <span class='commentaire'>/* Un simple point d'exclamation (!) permet de nier une valeur. */</span>
+    m := !f  <span class='commentaire'>// sera vrai car f est faux</span>
+
+    <span class='commentaire'>/* Deux opérateurs de comparaison logique sont également disponible.
+     * Ces opérateurs court-circuitent l'évaluation de leurs opérandes
+     * dès que le résultat final est déterminable. */</span>
+    
+    <span class='commentaire'>/* L'opérateur de disjonction && permet de tester si deux valeurs
+     * sont vraies. Puisque dans l'exemple suivant i est faux, la valeur
+     * de j n'est jamais évaluée. Dans cet exemple, cela ne change pas
+     * grand chose que fusse évalué car l'expression est simple et
+     * sans effets secondaires. */</span>
+    n := i && j
+
+    <span class='commentaire'>/* L'opérateur de conjonction || permet de tester si l'une ou l'autre
+     * valeur est vraie. Puisque dans l'exemple suivant i est faux, la valeur
+     * de j est évaluée. */</span>
+    o := i || j
+
+    <span class='commentaire'>/* Ces deux opérateurs peuvent être associés avec '=' pour ajourner
+     * une valeur. */</span>
+    p := !i <span class='commentaire'>// sera vrai puisque i est faux</span>
+    p ||= o <span class='commentaire'>// o n'est pas évalué car p est déjà vrai</span>
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch5'> Tableaux</h3>
+<p></p><p> Les tableaux sont des structures de données dont les éléments sont contigües en mémoire. </p><p> Kuri supporte 3 types de tableaux : fixes, dynamiques, ainsi que les tranches de tableaux fixes ou dynamiques. Ces types sont indexables via des nombres entiers.  Puisque ces types sont connus par le compilateur, ce dernier insère automatiquement des vérifications sur les indexages afin de détecter lors de l'exécution les accès hors de leurs bornes. </p>
+<h4 id='ch5-sec1'> Tableaux fixes</h4>
+<pre>
+exemple_tableau_fixe :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Déclaration d'un tableau fixe de 10 entiers de type z32. */</span>
+    tableau_fixe: [<span class='nombre'>10</span>]<span class='mot-cle'>z32</span>
+
+    <span class='commentaire'>/* Les valeurs peuvent être assignées manuellement : */</span>
+    tableau_fixe[<span class='nombre'>0</span>] = <span class='nombre'>1</span>
+    tableau_fixe[<span class='nombre'>1</span>] = tableau_fixe[<span class='nombre'>0</span>] + <span class='nombre'>1</span>
+}
+</pre>
+<h4 id='ch5-sec2'> Tableaux dynamiques</h4>
+<p>Les tableaux dynamiques sont des tableaux qui peuvent être redimensionnés lors de l'exécution du programme. D'autres langages les appels des vecteurs. En Kuri, ce nom est réservé pour les constructions mathématiques. </p>
+<pre>
+<span class='mot-cle'>importe</span> Fondation
+
+exemple_tableau_dynamique :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Déclaration d'un tableau dynamique dont les éléments sont de type z32. */</span>
+    tableau_dynamique: [..]<span class='mot-cle'>z32</span>
+
+    <span class='commentaire'>/* Nous ne pouvons pas directement assigner des valeurs à celui-ci.
+     *
+     * Par exemple :
+     *
+     *    tableau_dynamique[0] = 1
+     *
+     * Le compilateur ne s'en plaindra pas, mais le programme s'arrêtera
+     * (crashera) lors de l'exécution. Ce crash proviendra de code insérer
+     * par le compilateur. Il expliquera d'où vient le crash et offrira
+     * également une trace d'appel, ainsi qu'un message d'explication.
+     *
+     * Ce genre de protection existe également pour les accès :
+     *
+     * Par exemple :
+     *
+     *    x := tableau_dynamique[0]
+     *
+     * Puisque le tableau est vide, le programme se crashera.
+     */</span>
+
+    <span class='commentaire'>/* Pour pouvoir insérer des éléments dans le tableau, une fonction
+     * spécifique doit être utilisée.
+     * Ici le premier élément aura la valeur 123 */</span>
+    tableau_ajoute(*tableau_dynamique, <span class='nombre'>123</span>)
+}
+</pre>
+<h4 id='ch5-sec3'> Tranches</h4>
+<p></p><p> Les tranches représentent des vues statiques sur des tableaux fixes ou dynamiques. Ces derniers peuvent être automatiquement convertis en tranches. </p><p> </p>
+<pre>
+exemple_tranches :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Déclaration d'une tranche dont les éléments sont de type z32.
+     * Le type a la même forme que les tableaux dynamiques, mais sans
+     * les deux points. */</span>
+    tranche: []<span class='mot-cle'>z32</span>
+
+    <span class='commentaire'>/* Tout comme pour les tableaux fixes ou dynamiques, accéder à une
+     * tranche vide ou hors de ses limites crashera le programme. */</span>
+
+    <span class='commentaire'>/* Les tableaux fixes peuvent être convertis en tranches. */</span>
+    tableau_fixe: [<span class='nombre'>32</span>]<span class='mot-cle'>z32</span>
+    tranche = tableau_fixe
+
+    <span class='commentaire'>/* Cette conversion ne copie pas de données, la tranche ne faisant
+     * que référencer la mémoire du tableau fixe. Dès lors, nous pouvons
+     * modifier le tableau fixe depuis la tranche. */</span>
+    tranche[<span class='nombre'>5</span>] = <span class='nombre'>789</span> <span class='commentaire'>// tableau_fixe[5] aura la valeur de 789</span>
+
+    <span class='commentaire'>/* Les tableaux dynamiques peuvent également être convertis en tranches. */</span>
+    tableau_dynamique: [..]<span class='mot-cle'>z32</span>
+    tranche = tableau_dynamique
+
+    <span class='commentaire'>/* En somme ce type est utile pour définir des interfaces sans se
+     * soucier de savoir si le type originel est un tableau fixe ou
+     * dynamique. */</span>
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch6'> Chaines</h3>
+<p>Le type « chaine » est utilisé pour représenter une chaine de caractères littérales dans le code source. </p><p> Puisque Kuri a connaissance de ce type fondamental, le compilateur insère des vérifications lors des accès a des variables de ce type pour prévenir les dépassements de limites. </p>
+<h4 id='ch6-sec1'> Expression</h4>
+<pre>
+exemple_chaine :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Le contenu d'une chaine littérale est délimitée par des guillemets.
+     * Nous pouvons utiliser soit des guillemets anglais, soit français. */</span>
+    a: <span class='mot-cle'>chaine</span> = <span class='chaine'>"Cette chaine utilise des guillemets anglais"</span>
+    f: <span class='mot-cle'>chaine</span> = <span class='chaine'>«Celle-ci, français»</span>
+
+    <span class='commentaire'>/* Contrairement aux guillemets anglais, les français peuvent être
+     * imbriqués. */</span>
+    i := <span class='chaine'>« Nous « pouvons « avoir « plusieurs « niveaux » » » » de « guillemets » »</span>
+
+    <span class='commentaire'>/* Pour effectuer la même chose avec des guillemets anglais, il faut
+     * utiliser le caracètre d'échappement '\' */</span>
+    e := <span class='chaine'>"Il \"faut \"des \"échappements\" en \" anglais\""</span>
+
+    <span class='commentaire'>/* Les chaines littérales stockent également leurs tailles qui peut être
+     * accéder via la rubrique 'taille'. */</span>
+    abc := <span class='chaine'>"abc"</span>
+    taille_de_abc := abc.taille <span class='commentaire'>// ou "abc".taille</span>
+
+    <span class='commentaire'>/* Comme pour les tableaux, les chaines sont accessibles via une expression
+     * d'indexage. Les indices valides vont de 0 à taille - 1. */</span>
+    caractère := <span class='chaine'>"abcde"</span>[<span class='nombre'>2</span>] <span class='commentaire'>// retourne 'c'</span>
+
+    <span class='commentaire'>/* Toutefois, puisque les chaines de caractères sont encodées en UTF-8,
+     * l'indexage ne permet que d'accéder aux octets de la chaine, et non aux
+     * caractères « logiques ». De même, la rubrique taille des chaines
+     * renvoie de le nombre d'octets de celles-ci. */</span>
+    e_avec_accent := <span class='chaine'>"é"</span> <span class='commentaire'>// La taille de cette chaine sera de 2 car il faut</span>
+                         <span class='commentaire'>// 2 octets pour représenter cette lettre en UTF-8</span>
+                         <span class='commentaire'>// e_avec_accent[0] retournera alors l'octet de</span>
+                         <span class='commentaire'>// contrôle Unicode.</span>
+
+    <span class='commentaire'>/* Dans le future nous pourrions considérer avoir d'autres types de chaines
+     * pour UTF-16 (notamment utilisé sur le Web pour HTML, CSS, et ECMAScript),
+     * et UTF-32. */</span>
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch7'> Impression</h3>
+<h4 id='ch7-sec1'> imprime</h4>
+<p>Pour afficher du texte dans la console, la fonction « imprime » peut être utilisée. </p>
+<pre>
+<span class='mot-cle'>importe</span> Fondation
+
+exemple_imprime :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Ceci imprimera le texte passé suivi d'une nouvelle dans la console. */</span>
+    imprime(<span class='chaine'>"Bonjour, tout le monde !\n"</span>)
+
+    <span class='commentaire'>/* Pour imprimer des arguments, un signe '%' doit être utilisé en lieu
+     * et place de ceux-ci. */</span>
+    <span class='commentaire'>/* Ceci imprimera "J'ai 5 pommes et 3 bananes". */</span>
+    imprime(<span class='chaine'>"J'ai % pommes et % bananes"</span>, <span class='nombre'>5</span>, <span class='nombre'>3</span>)
+}
+</pre>
+<h4 id='ch7-sec2'> imprimeln</h4>
+<p>Une variante de imprime qui imprimera toujours une nouvelle ligne dans la console après son argument. </p>
+<pre>
+<span class='mot-cle'>importe</span> Fondation
+
+exemple_imprimeln :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Il n'y a pas besoin de spécifier un caractère de nouvelle ligne. */</span>
+    imprimeln(<span class='chaine'>"Bonjour, tout le monde !"</span>)
+}
+</pre>
+<h4 id='ch7-sec3'> fmt_imprime</h4>
+<p>Une variante de imprime qui utilise une manière différente de spécifer les arguments. </p>
+<pre>
+<span class='mot-cle'>importe</span> Fondation
+
+exemple_fmt_imprime :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Ici les arguments sont spécifiés en utilisant leurs indices contenu
+     * entre '\\(' et ')'. */</span>
+
+    <span class='commentaire'>/* Résultat : J'ai 5 pommes, 5 poires, et 3 bananes. */</span>
+    fmt_imprime(<span class='chaine'>"J'ai \\(0) pommes et \\(1) bananes"</span>, <span class='nombre'>5</span>, <span class='nombre'>3</span>)
+
+    <span class='commentaire'>/* Résultat : J'ai 5 pommes, 5 poires, et 3 bananes. */</span>
+    fmt_imprime(<span class='chaine'>"J'ai \\(0) pommes, \\(0) poires, et \\(1) bananes"</span>, <span class='nombre'>5</span>, <span class='nombre'>3</span>)
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch8'> Contrôle de flux</h3>
+<h4 id='ch8-sec1'> si</h4>
+<p>Le mot-clé « si » permet de tester une expression de valeur booléenne afin de rediriger le flux d'exécution du programme. </p>
+<pre>
+exemple_si :: <span class='mot-cle'>fonc</span> ()
+{
+    a := <span class='nombre'>5</span>
+    <span class='mot-cle'>si</span> a == <span class='nombre'>5</span> {
+        imprimeln(<span class='chaine'>"OK"</span>)
+    }
+}
+</pre>
+<h4 id='ch8-sec2'> saufsi</h4>
+<p>Le mot-clé « saufsi » est la simplement la négation de « si ». Alors que « si » teste si la valeur est vrai, « saufsi » teste si elle est fausse. </p>
+<pre>
+exemple_saufsi :: <span class='mot-cle'>fonc</span> ()
+{
+    a := <span class='nombre'>5</span>
+    <span class='mot-cle'>saufsi</span> a == <span class='nombre'>5</span> {
+        imprimeln(<span class='chaine'>"ERREUR"</span>)
+    }
+
+    <span class='commentaire'>/* Ceci est équivalent à : */</span>
+    <span class='mot-cle'>si</span> a != <span class='nombre'>5</span> {
+        imprimeln(<span class='chaine'>"ERREUR"</span>)
+    }
+
+    <span class='commentaire'>/* Ou encore : */</span>
+    <span class='mot-cle'>si</span> !(a == <span class='nombre'>5</span>) {
+        imprimeln(<span class='chaine'>"ERREUR"</span>)
+    }
+}
+</pre>
+<h4 id='ch8-sec3'> sinon</h4>
+<p>Le mot-clé « sinon » permet de définir un bloc de code alternatif au cas où le résultat d'un test de « si » ou de « saufsi » échoue. Il ne peut se trouver qu'après un « si » ou « saufsi ». </p>
+<pre>
+exemple_sinon :: <span class='mot-cle'>fonc</span> ()
+{
+    a := <span class='nombre'>5</span>
+
+    <span class='mot-cle'>si</span> a == <span class='nombre'>5</span> {
+        imprimeln(<span class='chaine'>"OK"</span>)
+    }
+    <span class='mot-cle'>sinon</span> {
+        imprimeln(<span class='chaine'>"ERREUR"</span>)
+    }
+
+    <span class='commentaire'>/* « sinon » peut également avoir une autre instruction comme opérande. */</span>
+    <span class='mot-cle'>si</span> a == <span class='nombre'>5</span> {
+        imprimeln(<span class='chaine'>"OK"</span>)
+    }
+    <span class='mot-cle'>sinon</span> <span class='mot-cle'>si</span> a > <span class='nombre'>5</span> {
+        imprimeln(<span class='chaine'>"ERREUR"</span>)
+    }
+    <span class='mot-cle'>sinon</span> {
+        imprimeln(<span class='chaine'>"ENCORE UNE ERREUR"</span>)
+    }
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch9'> Répétitions</h3>
+<p>Kuri fourni une variété d'instructions pour répéter une portion du programme. </p>
+<h4 id='ch9-sec1'> boucle</h4>
+<pre>
+exemple_boucle :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* La boucle la plus simple est une boucle infinie. */</span>
+    <span class='mot-cle'>boucle</span> {
+        imprimeln(<span class='chaine'>«Jusqu'ici tout va bien.»</span>)
+    }
+}
+</pre>
+<h4 id='ch9-sec2'> tantque</h4>
+<pre>
+exemple_boucle_tantque :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Parfois nous ne voulons répéter du code que tant qu'une condition est vrai. */</span>
+    x := <span class='nombre'>0</span>
+    <span class='mot-cle'>tantque</span> x < <span class='nombre'>10</span> {
+        x = x + <span class='nombre'>1</span>
+    }
+}
+</pre>
+<h4 id='ch9-sec3'> répète ... tantque</h4>
+<pre>
+exemple_boucle_répète :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Une boucle répète ... tantque permet de toujours exécuter son bloc au moins
+     * une fois. */</span>
+    x := <span class='nombre'>0</span>
+    <span class='mot-cle'>répète</span> {
+        x += <span class='nombre'>1</span>
+    } <span class='mot-cle'>tantque</span> x < <span class='nombre'>10</span>
+}
+</pre>
+<h4 id='ch9-sec4'> pour ... dans</h4>
+<pre>
+exemple_boucle_pour :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Les boucles « pour » sont utilisées pour itérer sur une séquence.
+     * La séquence peut être un tableau (dynamique, fixe, ou une simple
+     * tranche) : */</span>
+    mon_tableau := [<span class='nombre'>0</span>, <span class='nombre'>1</span>, <span class='nombre'>2</span>, <span class='nombre'>3</span>, <span class='nombre'>4</span>, <span class='nombre'>5</span>, <span class='nombre'>6</span>]
+    <span class='mot-cle'>pour</span> valeur <span class='mot-cle'>dans</span> mon_tableau {
+        imprimeln(<span class='chaine'>«%»</span>, valeur)
+    }
+
+    <span class='commentaire'>/* Ou une chaine :
+     * À noter que bien que les chaines sont encodées en UTF-8, l'itération
+     * ne se fait que sur les octets de la chaine. */</span>
+    <span class='mot-cle'>pour</span> caractère <span class='mot-cle'>dans</span> <span class='chaine'>«abcdefghijklmnopqrstuvwxyz»</span> {
+        imprimeln(<span class='chaine'>«%»</span>, caractère)
+    }
+
+    <span class='commentaire'>/* Ou encore une plage, dénoter par une ellipse :
+     * Les plages sont inclusives, donc 11 valeurs seront imprimées (de 0 à 10). */</span>
+    <span class='mot-cle'>pour</span> n <span class='mot-cle'>dans</span> <span class='nombre'>0</span> ... <span class='nombre'>10</span> {
+        imprimeln(<span class='chaine'>«%»</span>, n)
+    }
+
+    <span class='commentaire'>/* On peut également ne spécifier qu'un simple nombre entier qui
+     * définira le nombre total d'itérations :
+     * Dans cet exemple, contrairement à la plage plus haut, seulement
+     * 10 seront imprimées (de 0 à 9). */</span>
+    <span class='mot-cle'>pour</span> x <span class='mot-cle'>dans</span> <span class='nombre'>10</span> {
+        imprimeln(<span class='chaine'>«%»</span>, n)
+    }
+
+    <span class='commentaire'>/* Dans tous les cas, une deuxième variable peut être définie qui
+     * possèdera la valeur d'indice de l'itération courante, cet indice
+     * compte à partir de 0: */</span>
+    <span class='mot-cle'>pour</span> y, indice_y <span class='mot-cle'>dans</span> <span class='nombre'>10</span> {
+        imprimeln(<span class='chaine'>«% %»</span>, y, indice_y) <span class='commentaire'>// imprimera '0 0', '1 1', etc.</span>
+    }
+
+    <span class='commentaire'>/* Il est également possible de ne pas spécifier de variables,
+     * et d'omettre le mot-clé « dans ».
+     * Le compilateur se chargera de définir deux variables : « it » pour
+     * la valeur d'itération, et « indice_it » pour l'indice d'itération. */</span>
+    <span class='mot-cle'>pour</span> <span class='nombre'>25</span> {
+        imprimeln(<span class='chaine'>«% %»</span>, it, indice_it)
+    }
+
+    <span class='commentaire'>/* Nous pouvons controler le sens de l'itération avec les signes
+     * < et >. Par défaut, < est utilisé pour itérer du plus petit indice
+     * au plus grand. > peut être utilisé pour itérer du plus grand au
+     * plus petit (donc en arrière). */</span>
+    <span class='mot-cle'>pour</span> > <span class='chaine'>«ABCDEF»</span> {
+        imprimeln(<span class='chaine'>«%»</span>, it) <span class='commentaire'>// imprimera F, puis E, puis D, etc.</span>
+    }
+
+    <span class='commentaire'>/* Pourtant, la variable d'indice continuera de compter à partir de 0. */</span>
+    <span class='mot-cle'>pour</span> > [<span class='nombre'>0</span>, <span class='nombre'>1</span>, <span class='nombre'>2</span>, <span class='nombre'>3</span>] {
+        imprimeln(<span class='chaine'>«% -> %»</span>, indice_it, it) <span class='commentaire'>// imprimera '0 -> 3', '1 -> 2', etc.</span>
+    }
+}
+</pre>
+<h4 id='ch9-sec5'> continue, arrête</h4>
+<pre>
+exemple_continue_arrête :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Les répétitions de toutes les variétés de boucles peuvent être controler
+     * via les mot-clés « continue » et « arrête » */</span>
+    x := <span class='nombre'>0</span>
+    <span class='mot-cle'>boucle</span> {
+        <span class='mot-cle'>si</span> x == <span class='nombre'>5</span> {
+            <span class='mot-cle'>continue</span>
+        }
+        <span class='mot-cle'>si</span> x == <span class='nombre'>10</span> {
+            <span class='mot-cle'>arrête</span>
+        }
+        imprimeln(<span class='chaine'>«%»</span>, x) <span class='commentaire'>// imprimera les nombre de 0 à 9 sauf 5</span>
+        x += <span class='nombre'>1</span>
+    }
+}
+</pre>
+<h4 id='ch9-sec6'> reprends</h4>
+<pre>
+exemple_reprends :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Le mot-clé « reprends » peut être utilisé dans les boucles « pour »
+     * afin de recommencer l'itération courante : l'indice d'itération ne
+     * sera pas incrémenté. Ceci n'annule en aucun cas les effets secondaires
+     * du programme ayant eu lieu entre le début de l'itération et l'exécution
+     * de l'instruction de reprise. */</span>
+    fut_reprise := <span class='mot-cle'>faux</span>
+    <span class='mot-cle'>pour</span> <span class='nombre'>10</span> {
+        imprimeln(<span class='chaine'>«%»</span>, it) <span class='commentaire'>// la valeur 5 sera imprimé deux fois</span>
+        <span class='mot-cle'>si</span> it == <span class='nombre'>5</span> && fut_reprise == <span class='mot-cle'>faux</span> {
+            fut_reprise = <span class='mot-cle'>vrai</span>
+            <span class='mot-cle'>reprends</span>
+        }
+    }
+}
+</pre>
+<h4 id='ch9-sec7'> Contrôle ciblé</h4>
+<pre>
+exemple_contrôle_ciblé :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Les mot-clé « continue », « arrête », et « reprends » peuvent être suivis
+     * d'un identifiant d'une variable de boucle « pour ». */</span>
+    <span class='mot-cle'>pour</span> x <span class='mot-cle'>dans</span> <span class='nombre'>10</span> {
+        <span class='mot-cle'>pour</span> y <span class='mot-cle'>dans</span> <span class='nombre'>10</span> {
+            <span class='mot-cle'>si</span> x == <span class='nombre'>5</span> {
+                <span class='mot-cle'>arrête</span> x
+            }
+            <span class='mot-cle'>si</span> y == <span class='nombre'>5</span> {
+                <span class='mot-cle'>continue</span> x <span class='commentaire'>// équivalent à 'arrête y' ou simplement 'arrête'</span>
+            }
+            <span class='commentaire'>// imprimera de '0 0' à '4 4' sans qu'aucune des deux valeurs</span>
+            <span class='commentaire'>// ne soit supérieure à 4</span>
+            imprimeln(<span class='chaine'>«% %»</span>, x, y)
+        }
+    }
+}
+</pre>
+<h4 id='ch9-sec8'> sansarrêt, sinon</h4>
+<p>Les boucles « pour » peuvent avoir deux blocs consécutifs introduits via les mots-clés « sansarrêt » et « sinon ». Contrairement au for-else de Python, leur sémantique est correcte. </p>
+<pre>
+exemple_sansarrêt_sinon :: <span class='mot-cle'>fonc</span> ()
+{
+    <span class='commentaire'>/* Un bloc « sansarrêt » n'est exécuté que si aucune instruction « arrête »
+     * ne fut rencontrée lors de l'exécution de la boucle. */</span>
+    <span class='mot-cle'>pour</span> <span class='nombre'>25</span> {
+        imprimeln(<span class='chaine'>«%»</span>, it)
+    }
+    <span class='mot-cle'>sansarrêt</span> {
+        imprimeln(<span class='chaine'>«Nous sommes toujours exécuté»</span>)
+    }
+
+    <span class='mot-cle'>pour</span> <span class='nombre'>25</span> {
+        <span class='mot-cle'>si</span> it == <span class='nombre'>17</span> {
+            <span class='mot-cle'>arrête</span>
+        }
+        imprimeln(<span class='chaine'>«%»</span>, it)
+    }
+    <span class='mot-cle'>sansarrêt</span> {
+        imprimeln(<span class='chaine'>«ERREUR : nous n'aurions pas dû être exécuté»</span>)
+    }
+
+    <span class='commentaire'>/* Un bloc « sinon » n'est exécuté que si une instruction « arrête » est exécuté. */</span>
+    <span class='mot-cle'>pour</span> <span class='nombre'>25</span> {
+        imprimeln(<span class='chaine'>«%»</span>, it)
+    }
+    <span class='mot-cle'>sinon</span> {
+        imprimeln(<span class='chaine'>«ERREUR : nous n'aurions pas dû être exécuté»</span>)
+    }
+
+    <span class='mot-cle'>pour</span> <span class='nombre'>25</span> {
+        <span class='mot-cle'>si</span> it == <span class='nombre'>17</span> {
+            <span class='mot-cle'>arrête</span>
+        }
+        imprimeln(<span class='chaine'>«%»</span>, it)
+    }
+    <span class='mot-cle'>sinon</span> {
+        imprimeln(<span class='chaine'>«Nous sommes toujours exécuté»</span>)
+    }
+
+    <span class='commentaire'>/* Les deux blocs peuvent être spécifiés, et ce, dans n'importe quel ordre. */</span>
+    <span class='mot-cle'>pour</span> <span class='nombre'>25</span> {
+        imprimeln(<span class='chaine'>«Va falloir être créatif un jour.»</span>)
+    }
+    <span class='mot-cle'>sansarrêt</span> {
+        imprimeln(<span class='chaine'>«Question : suis-je exécuté ?»</span>)
+    }
+    <span class='mot-cle'>sinon</span> {
+        imprimeln(<span class='chaine'>"ERREUR : mes guillemets sont en anglais."</span>)
+    }
+}
+</pre>
+</div>
+<hr>
+<div>
+<h3 id='ch10'> Exécution lors de la compilation</h3>
+<p></p><p> Kuri croit fermement à la philosophie suivante : tout code doit pouvoir être exécutable lors de la compilation par le compilateur. </p><p> Contrairement à d'autres langages où l'exécution lors de la compilation n'est, sinon inexistante, qu'une arrière pensée exprimée dans un sous-ensemble du langage, toute expression en Kuri est exécutable. Y compris des appels à des fonctions de bibliothèques externes. Que ce soit pour écrire un fichier sur le disque, envoyer un courriel, ou faire un virement bancaire, si le code à exécuter pour ce faire est disponible dans une bibliothèque localisable, chargeable, et exécutable par le compilateur, le compilateur l'exécutera. Sinon, la compilation s'arrêtera sur une erreur. </p><p> Ce système est également à la base du modèle de compilation de Kuri où il est utilisé pour contrôler ce que le compilateur fait. Nous y reviendrons avec plus de détail dans d'autres chapitres. </p>
+<h4 id='ch10-sec1'> #exécute</h4>
+<p>La directive #exécute permet de demander au compilateur d'exécuter l'expression qui est son opérande et de retourner le résultat si elle en produit un. </p><p> Elle peut être utilisée dans tous les contextes, que ce soit dans une fonction, ou dans le contexte global. </p>
+<pre>
+<span class='commentaire'>/* Ceci imprimera lors de la compilation le message donné. Notons que nous sommes
+ * dans le contexte global. */</span>
+#exécute imprimeln(<span class='chaine'>"Coucou, tu veux voir mon exécution ?"</span>)
+
+exemple_dans_une_fonction :: <span class='mot-cle'>fonc</span> ()
+{
+    donne_moi_un_nombre :: <span class='mot-cle'>fonc</span> ()
+    {
+        <span class='mot-cle'>retourne</span> <span class='nombre'>7</span> <span class='commentaire'>// Choisit aléatoirement</span>
+    }
+
+    a := #exécute <span class='nombre'>2</span> + <span class='nombre'>3</span> * donne_moi_un_nombre()
+    <span class='commentaire'>/* Dans l'exemple ci-dessus, 'a' aura la valeur constante 23,
+     * et la fonction donne_moi_un_nombre() ne se retrouvera nulle part dans
+     * l'exécutable final, ni le reste de l'expression.
+     *
+     * Il y a toutefois une limite : seules les expressions constantes
+     * peuvent être exécutées.
+     *
+     * Par exemple, ceci ne fonctionnera pas :
+     *
+     *  a := 5
+     *  b := 6
+     *  c := #exécute a + b
+     *
+     */</span>
+
+    <span class='commentaire'>/* Ces exemples sont aussi simples que cette documentation sommaire.
+     * Pour donner un exemple concret, Nubifer utilise ce méchanisme
+     * pour générer lors de la compilation les liaisons nécessaires pour
+     * exposer son interface de programmation applicative (IPA, ou API pour
+     * les anglaisés) à JavaScript.*/</span>
+}
+</pre>
+<h4 id='ch10-sec2'> #corps_texte</h4>
+<p>#corps_texte est similaire à similaire à #exécute : cette directive permet d'exécuter du code arbitraire. Elle peut être utilisée pour dire au compilateur que le corps de la fonction est en fait le texte que l'exécution du métaprogramme #corps_texte retournera. </p>
+<pre>
+principale :: <span class='mot-cle'>fonc</span> ()
+#corps_texte {
+    <span class='commentaire'>/* Dans un programme sérieux, le code source pourra être générer à partir
+     * d'informations externes, ou de paramètres constants passés à la fonction. */</span>
+    vrai_code_source := <span class='chaine'>«imprimeln(«Bonjour, tout le monde !»)»</span>
+    <span class='mot-cle'>retourne</span> vrai_code_source
+}
+</pre>
+<h4 id='ch10-sec3'> #test</h4>
+<p></p><p> #test est une directive qui permet de spécifier un test unitaire à exécuter lors de la compilation quand l'argument '--tests' est passé au compilateur. </p><p> Puisque tout est exécutable en Kuri, et que le code exécuté lors de la compilation est le même que celui qui sera dans le compilat final, un test passant lors de la compilation peut signifier que la fonctionalité qu'il teste sera correcte dans le code machine générée. </p><p> Cette directive est expérimentale. Si gardée, dans le future, nous pourrions également générer des exécutables pour ces tests afin de vérifier que le code machine généré est tout aussi correcte. </p>
+<pre>
+<span class='commentaire'>/* Importons l'IPA du compilateur */</span>
+<span class='mot-cle'>importe</span> Compilatrice
+
+#test {
+    a := <span class='nombre'>5</span>
+    b := <span class='nombre'>6</span>
+    compilatrice_vérifie(a != b) <span class='commentaire'>// Ceci fera échouer la compilation si le résultat</span>
+                                 <span class='commentaire'>// est faux.</span>
+}
+</pre>
+</div>
+</body>
+</html>
